@@ -56,47 +56,54 @@ class Solution(object):
         """
         if len(transactions) < 2:
             return None
-        result = [t for t in transactions if int(t.split(',')[2]) > 1000]
-        transactions = [t for t in transactions if int(t.split(',')[2]) <= 1000]
+        result = []
         transGroupByName = {}
         for trans in transactions:
             sepe = trans.split(',')
             if sepe[0] in transGroupByName:
-                transGroupByName[sepe[0]].append(sepe)
+                transGroupByName[sepe[0]].append(trans)
             else:
-                transGroupByName[sepe[0]] = [sepe]
-        print(transGroupByName)
-        for tranName, trans in enumerate(transGroupByName):
-            if len(trans) < 2:
-                pass
-            else:
-                stack = []
-                for t in trans:
-                    
+                transGroupByName[sepe[0]] = [trans]
 
         def takeTime(elem):
             return int(elem.split(',')[1])
-        
-        # 按照交易名划分所有的交易。
 
-        transactions.sort(key=takeTime)
-        last = transactions[0].split(',')
-        for trans in transactions[1:]:
-            t = trans.split(',')
-            if int(t[1]) - int(last[1]) < 60 and t[0] == last[0]:
-                if not result[-1] == last:
-                    result.append(last)
-                result.append(trans)
+        for trans in transGroupByName.values():
+            crtR = set([])
+            trans.sort(key=takeTime)
+            if len(trans) < 2:
+                for t in trans:
+                    if int(t.split(',')[2]) > 1000:
+                        crtR.add(t)
+            else:
+                for index, t in enumerate(trans):
+                    newT = t.split(',')
+                    if int(newT[2]) > 1000:
+                        crtR.add(t)
+                    for former in trans[0:index]:
+                        newF = former.split(',')
+                        if (newT[3] != newF[3] and int(newT[1]) - int(newF[1]) <= 60):
+                            crtR.add(former)
+                            crtR.add(t)
+            if len(crtR) > 0:
+                result.extend(crtR)
         return result
+    class Solution(object):
+        def maxScore(self, cardPoints, k):
+        """
+        :type cardPoints: List[int]
+        :type k: int
+        :rtype: int
+        """
+        
+        return 2;
 
 sol = Solution()  
-treeArray = ["alice,20,800,mtv","alice,50,100,beijing"]
-# t = ["alice,20,800,mtv","alice,50,100,mtv", "alice,70,100,beijing"]
-t = ["alice,20,800,mtv","join,50,100,mtv", "alice,70,100,beijing"]
+t = [1,2,3,4,5]
 
 # node = TreeNode.treeCreater(treeArray)
 
-print(sol.invalidTransactions(t))
+print(sol.maxScore(t, 3))
 
 
 

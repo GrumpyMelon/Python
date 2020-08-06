@@ -1,5 +1,7 @@
+# -*- coding:utf8 -*-
 from tree_node import TreeNode
 from typing import List
+import sys
 
 class Solution(object):
     def restoreString(self, s, indices):
@@ -88,18 +90,27 @@ class Solution(object):
             if len(crtR) > 0:
                 result.extend(crtR)
         return result
-    class Solution(object):
-        def maxScore(self, cardPoints, k):
+    def maxScore(self, cardPoints, k):
         """
         :type cardPoints: List[int]
         :type k: int
         :rtype: int
         """
-        
-        return 2;
+        length = len(cardPoints)
+        if k == length:
+            return sum(cardPoints)
+        l = [cardPoints[0]] * k
+        r = [cardPoints[length - 1]] * k
+        for i in range(1, k):
+            l[i] = l[i - 1] + cardPoints[i]
+            r[i] = r[i - 1] + cardPoints[length - 1 - i]
+        res = max(l[k - 1], r[k - 1])
+        for i in range(0, k):
+            res = max(res, l[i] + r[k - i - 2]) 
+        return res;
 
 sol = Solution()  
-t = [1,2,3,4,5]
+t = [1120, 2,3,4,5,6]
 
 # node = TreeNode.treeCreater(treeArray)
 

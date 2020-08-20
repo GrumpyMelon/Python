@@ -13,3 +13,17 @@ class TreeNode:
             treeNode.right = TreeNode.treeCreater(array, 2 * index + 2)
             return treeNode
         return None
+
+class ListNode:
+    def __init__(self, val=0, next=None):
+        self.val = val
+        self.next = next
+        
+    @classmethod
+    def listCreater(cls, array):
+        l = ListNode(0)
+        head = l
+        for i in array:
+            head.next = ListNode(i)
+            head = head.next
+        return l.next

@@ -112,24 +112,19 @@ class Solution(object):
         else:
             return run(cardPoints,k)
     def singleNonDuplicate(self, nums):
-        length = len(nums)
-        if length == 1:
-            return nums[0]
-        i = int((length - 1) / 2)
-        isOdd = i % 2 != 0
-        if nums[i] == nums[i - 1]:
-            if isOdd:
-                return self.singleNonDuplicate(nums[i+1:])
+        left, right = 0, len(nums)-1
+
+        while left < right:
+            mid = left + (right-left)//2
+            if mid > 0 and mid % 2 == 1:
+                mid -= 1
+
+            if nums[mid] == nums[mid+1]:
+                left = mid+2
             else:
-                return self.singleNonDuplicate(nums[:i-1])
-        else:
-            if nums[i] == nums[i + 1]:
-                if isOdd:
-                    return self.singleNonDuplicate(nums[:i])
-                else:
-                    return self.singleNonDuplicate(nums[i+2:])
-            else:
-                return nums[i]
+                right = mid-1
+        
+        return nums[left]
     def parseBoolExpr(self, expression):
         if len(expression) == 0:
             return False
@@ -164,39 +159,36 @@ class Solution(object):
         else:
             return False
     def triangleNumber(self, nums):
-        if len(nums) < 3:
-            return 0
         nums.sort()
-        result = 0
-        cursor = list(range(1, len(nums) + 1))
-        print(cursor)
-        for i in range(0, len(nums) - 2):
-            for j in range(i + 1, len(nums) - 1):
-                while cursor[j] < len(nums) and nums[i] + nums[j] > nums[cursor[j]]:
-                    cursor[j] += 1
-                result += (cursor[j] - j - 1)
-        return result
+        res = 0
+        for i in range(len(nums)-1, 1, -1):
+            left = 0
+            right = i - 1
+            while left < right:
+                if nums[left] + nums[right] > nums[i]:
+                    res += right - left
+                    right -= 1
+                else:
+                    left += 1
+        return res
     def sortedListToBST(self, head):
         """
         :type head: ListNode
         :rtype: TreeNode
         """
-        l = []
-        while head:
-            l.append(head.val)
+        list_node = []
+        while(head):
+            list_node.append(head.val)
             head = head.next
-        def createTree(l):
-            length = len(l)
-            if length == 1:
-                return TreeNode(l[0])
-            if length == 0:
+        def compute_tree(start, end):
+            if start>end:
                 return None
-            i =  int(length / 2)
-            root = TreeNode(l[i])
-            root.left = createTree(l[:i])
-            root.right = createTree(l[i+1:])
+            mid = start + (end-start)//2
+            root = TreeNode(list_node[mid])
+            root.left = compute_tree(start, mid-1)
+            root.right = compute_tree(mid+1, end)
             return root
-        root = createTree(l)
+        root = compute_tree(0, len(list_node)-1)
         return root
     def countSubstrings(self, s):
         """
@@ -227,11 +219,82 @@ class Solution(object):
                         break;
 
         return result
+    def updateBoard(self, board, click):
+        """
+        :type board: List[List[str]]
+        :type click: List[int]
+        :rtype: List[List[str]]
+        """
+        i = click[0]
+        j = click[1]
+        def clickBoard(board, i, j):
+            if i >= len(board) or i < 0 or j >= len(board[i]) or j < 0:
+                return board
+            if board[i][j] == "M":
+                board[i][j] = "X"
+                return board
+            if board[i][j] == "B" or board[i][j] in [str(num) for num in range(1, 9)]:
+                return board
+            if board[i][j] == "E":
+
+                def isMine(board, i, j):
+                    if i >= len(board) or i < 0 or j >= len(board[i]) or j < 0:
+                        return False
+                    return board[i][j] in ["M", "X"]
+
+                aroundArray = [(i - 1, j - 1), (i, j - 1), (i + 1, j - 1), (i - 1, j), (i + 1, j), (i - 1, j + 1), (i, j + 1), (i + 1, j + 1)]
+                mineCount = 0
+                for l, r in aroundArray:
+                    if isMine(board, l, r):
+                        mineCount += 1
+                if mineCount > 0:
+                    board[i][j] = str(mineCount)
+                    return board
+                else:
+                    board[i][j] = "B"
+                    for l, r in aroundArray:
+                        board = clickBoard(board, l, r)
+                    return board
+            return board
+        return clickBoard(board, i, j)
+
+
+    def repeatedSubstringPattern(self, s):    
+        for i in range(2, len(s) + 1):
+            if len(s) % i == 0:
+                subLength = int(len(s) / i)
+                targetString = s[0:subLength]
+                repeat = True
+                for j in range(1, i):
+                    if targetString != s[j * subLength: (j + 1) * subLength]:
+                        repeat = False
+                        break;
+                if repeat:
+                    return True
+            else:
+                continue 
+        return False
+    def canPartitionKSubsets(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: bool
+        """
+        nums.sort();
+        if sum(nums) % k != 0:
+            return False
+        subSum = sum(nums) // k
+        if nums[-1] > subSum:
+            return False
+        
+
+
 sol = Solution()  
-# t = [2,2,3,4,5,6,7,8,9]
+t = [2,2,3,4,5,6,7,8,9]
 # l  = ListNode.listCreater(t)
-s = 'abc'
-print(sol.countSubstrings(s))
+s = 'abcabcabcs'
+# board = [["E","E","E","E","E"],["E","E","M","E","E"],["E","E","E","E","E"],["E","E","E","E","E"]]
+print(sol.canPartitionKSubsets(t, 4))
 
 
 

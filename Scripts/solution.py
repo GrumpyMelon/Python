@@ -287,14 +287,30 @@ class Solution(object):
         if nums[-1] > subSum:
             return False
         
-
-
+    def findSubsequences(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[List[int]]
+        """
+        if len(nums) < 2:
+            return []
+        def findEvery(nums):
+            if len(nums) == 1:
+                return [nums]
+            result = findEvery(nums[:-1])
+            last = [nums[-1]]
+            re = result + [x + last for x in result if last[0] > x[-1]]  + [last]
+            return re
+        re = [x for x in findEvery(nums) if len(x) != 1]
+        re = list(set([tuple(t) for t in re]))
+        re = [list(v) for v in re]
+        return re
 sol = Solution()  
-t = [2,2,3,4,5,6,7,8,9]
+t = [2,2,3,4,5,6]
 # l  = ListNode.listCreater(t)
 s = 'abcabcabcs'
 # board = [["E","E","E","E","E"],["E","E","M","E","E"],["E","E","E","E","E"],["E","E","E","E","E"]]
-print(sol.canPartitionKSubsets(t, 4))
+print(sol.findSubsequences(t))
 
 
 

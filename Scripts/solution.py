@@ -299,14 +299,29 @@ class Solution(object):
                 return [nums]
             result = findEvery(nums[:-1])
             last = [nums[-1]]
-            re = result + [x + last for x in result if last[0] > x[-1]]  + [last]
+            re = result + [x + last for x in result if last[0] >= x[-1]]  + [last]
             return re
         re = [x for x in findEvery(nums) if len(x) != 1]
         re = list(set([tuple(t) for t in re]))
         re = [list(v) for v in re]
         return re
+    def findItinerary(self, tickets):
+        """
+        :type tickets: List[List[str]]
+        :rtype: List[str]
+        """
+        result = []
+        tempResult = []
+        for i, l in enumerate(tickets):
+            for indexs in tempResult:
+                if i in indexs:
+                    pass
+                else:
+                    if l[1] 
+        return result
 sol = Solution()  
-t = [2,2,3,4,5,6]
+# t = [2,2,3,4,5,6]
+t = [4,6,7,7]
 # l  = ListNode.listCreater(t)
 s = 'abcabcabcs'
 # board = [["E","E","E","E","E"],["E","E","M","E","E"],["E","E","E","E","E"],["E","E","E","E","E"]]

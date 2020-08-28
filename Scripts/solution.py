@@ -3,6 +3,7 @@ from base_define import TreeNode
 from base_define import ListNode
 from typing import List
 import sys
+import collections
 
 class Solution(object):
     def restoreString(self, s, indices):
@@ -310,15 +311,24 @@ class Solution(object):
         :type tickets: List[List[str]]
         :rtype: List[str]
         """
-        result = []
-        tempResult = []
-        for i, l in enumerate(tickets):
-            for indexs in tempResult:
-                if i in indexs:
-                    pass
-                else:
-                    if l[1] 
-        return result
+        stack = []
+        def dps(depart):
+            while dic[depart]:
+                ar = dic[depart][0] 
+                dic[depart].pop(0)
+                dps(ar)
+            stack.append(depart)
+        dic = collections.defaultdict(list)
+        for de, ar in tickets:
+            if dic[de] != None:
+                dic[de].append(ar)
+            else:
+                dic[de] = [ar]
+        for key in dic:
+            dic[key].sort()
+        dps("JFK")
+        stack.reverse()
+        return stack
     def judgeCircle(self, moves):
         """
         :type moves: str
@@ -335,10 +345,10 @@ class Solution(object):
             else:
                 origin[0] += 1
         return origin == (0, 0)
-                    
 sol = Solution()  
 # t = [2,2,3,4,5,6]
 t = [4,6,7,7]
+m = [["MUC", "LHR"], ["JFK", "MUC"], ["SFO", "SJC"], ["LHR", "SFO"]]
 # l  = ListNode.listCreater(t)
 s = 'abcabcabcs'
 # board = [["E","E","E","E","E"],["E","E","M","E","E"],["E","E","E","E","E"],["E","E","E","E","E"]]

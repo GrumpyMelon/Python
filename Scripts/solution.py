@@ -319,13 +319,30 @@ class Solution(object):
                 else:
                     if l[1] 
         return result
+    def judgeCircle(self, moves):
+        """
+        :type moves: str
+        :rtype: bool
+        """
+        origin = (0, 0)
+        for c in moves:
+            if c == "T":
+                origin[1] += 1
+            elif c == "D":
+                origin[1] -= 1
+            elif c == "L":
+                origin[0] -= 1
+            else:
+                origin[0] += 1
+        return origin == (0, 0)
+                    
 sol = Solution()  
 # t = [2,2,3,4,5,6]
 t = [4,6,7,7]
 # l  = ListNode.listCreater(t)
 s = 'abcabcabcs'
 # board = [["E","E","E","E","E"],["E","E","M","E","E"],["E","E","E","E","E"],["E","E","E","E","E"]]
-print(sol.findSubsequences(t))
+print(sol.judgeCircle("TTLL"))
 
 
 

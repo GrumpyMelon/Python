@@ -334,9 +334,9 @@ class Solution(object):
         :type moves: str
         :rtype: bool
         """
-        origin = (0, 0)
+        origin = [0, 0]
         for c in moves:
-            if c == "T":
+            if c == "U":
                 origin[1] += 1
             elif c == "D":
                 origin[1] -= 1
@@ -344,15 +344,41 @@ class Solution(object):
                 origin[0] -= 1
             else:
                 origin[0] += 1
-        return origin == (0, 0)
+        return origin == [0, 0]
+    def crackSafe(self, n, k):
+        """
+        :type n: int
+        :type k: int
+        :rtype: str
+        """
+        return None
+    def canVisitAllRooms(self, rooms):
+        """
+        :type rooms: List[List[int]]
+        :rtype: bool
+        """
+        def dps(index):
+            keys = rooms[index]
+            roomSet.add(index)
+            if len(keys) > 0:
+                rooms[index] = []
+                for k in keys:
+                    dps(k)
+        roomSet = set()
+        dps(0)
+        print(roomSet)
+        print(rooms)
+        return len(roomSet) == len(rooms)
 sol = Solution()  
 # t = [2,2,3,4,5,6]
-t = [4,6,7,7]
+# t = [[1,3],[3,0,1,2],[2],[0]]
+# t = [[1],[2],[3],[0]]
+t = [[1],[2],[3],[]]
 m = [["MUC", "LHR"], ["JFK", "MUC"], ["SFO", "SJC"], ["LHR", "SFO"]]
 # l  = ListNode.listCreater(t)
 s = 'abcabcabcs'
 # board = [["E","E","E","E","E"],["E","E","M","E","E"],["E","E","E","E","E"],["E","E","E","E","E"]]
-print(sol.judgeCircle("TTLL"))
+print(sol.canVisitAllRooms(t))
 
 
 

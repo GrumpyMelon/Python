@@ -98,6 +98,61 @@ class Solution(object):
             re = [[i for i in nums if i not in l] for l in queue]
             return re
         return queue
+    def combinationSum2(self, candidates, target):
+        """
+        :type candidates: List[int]
+        :type target: int
+        :rtype: List[List[int]]
+        """
+        if target <= 0:
+            return []
+        reselt = set()
+        candidates.sort()
+        for i, x in enumerate(candidates):
+            if x == target:
+                reselt.add(tuple([x]))
+                candidates = candidates[:i]
+                break;
+            if x > target:
+                candidates = candidates[:i]
+                break;
+        ca_length = len(candidates)
+        queue = [[x] for x in range(0, ca_length)]
+        for _ in range(2, len(candidates) + 1):
+            length = len(queue)
+            for j in range(0, length):
+                l = queue[j]
+                lastIndex = l[-1]
+                for index in range(lastIndex + 1, ca_length):
+                    num = candidates[index]
+                    lc = [candidates[i] for i in l]
+                    lc.append(num)
+                    if sum(lc) == target:
+                        reselt.add(tuple(lc))                        
+                    elif sum(lc) < target:
+                        queue.append(l + [index])
+                    else:
+                        pass
+            queue = queue[length:]
+        return [list(x) for x in reselt]
+    def permuteUnique(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[List[int]]
+        """
+        if len(nums) == 0:
+            return []
+        result = [[nums[0]]]
+        for num in nums[1:]:
+            length = len(result)
+            for i in range(0, length):
+                l = result[i]
+                for j in range(0, len(l) + 1):
+                    newL = list(l)
+                    newL.insert(j, num)
+                    result.append(newL)
+            result = result[length:]
+        return [list(y) for y in set([tuple(x) for x in result])]
     def fingerGame(self):
         me = (1, 1)
         you = (1, 1)
@@ -118,66 +173,33 @@ class Solution(object):
             else:
                 return gameProcess(a, (b[0] + a[0], b[1]), True) and gameProcess(a, (b[0] + a[1], b[1]), True) and gameProcess(a, (b[0], a[0] + b[1]), True) and gameProcess(a, (b[0], a[1] + b[1]), True)
         print(gameProcess(me, you, True))
-    def combinationSum(self, candidates, target):
+    def subsets(self, nums):
         """
-        :type candidates: List[int]
-        :type target: int
+        :type nums: List[int]
         :rtype: List[List[int]]
         """
-        if target <= 0:
-            return []
-        reselt = []
-        ca_length = len(candidates)
-        queue = [[x] for x in range(0, ca_length)]
-        for i, x in enumerate(candidates):
-            if x > target:
-                candidates = candidates[:i]
-                break;
-            if target % x == 0:
-                reselt.append([x] * (target // x))
-        ca_length = len(candidates)
-        for _ in range(2, len(candidates) + 1):
-            length = len(queue)
-            for j in range(0, length):
-                l = queue[j]
-                lastIndex = l[-1]
-                for index in range(lastIndex + 1, ca_length):
-                    num = candidates[index]
-                    lc = [candidates[i] for i in l]
-                    lc.append(num)
-                    queue.append(l + [index])
-                    if sum(lc) == target:
-                        reselt.append(lc)
-                    else:
-                        newTarget = target - sum(lc)
-                        suffix = self.combinationSum(lc, newTarget)
-                        if len(suffix) > 0:
-                            reselt += [lc+x for x in suffix]
-            queue = queue[length:]
-        return reselt
-    def combinationSum2(self, candidates, target):
+        if len(nums) == 0:
+            return [[]]
+        if len(nums) == 1:
+            return [[], [nums[0]]]
+        subSet = self.subsets(nums[1:])
+        return [x+[nums[0]] for x in subSet] + subSet
+    def convertBST(self, root):
         """
-        :type candidates: List[int]
-        :type target: int
-        :rtype: List[List[int]]
+        :type root: TreeNode
+        :rtype: TreeNode
         """
-        if target == 0:
-            return []
-        if target < 0:
-            return None
-        if len(candidates) == 0:
-            return None
-        if len(candidates) == 1:
-            if candidates[0] == target:
-                return [target]
-            else:
-                return Nones
-        result = set()
-        for i, num in enumerate(candidates):
-            suffix = self.combinationSum2(candidates[i + 1:], target - num)
-            if suffix != None:
-                result = set.union(result, set([[num] + s for s in suffix])
-        return list(result)
+        def calculateBST(node, rootVal):
+            if node == None or (node.left == None and node.right == None):
+                node.val += rootVal
+                return (node, node.val)
+            originNodeVal = node.val
+            node.right, rightVal = calculateBST(node.right, 0)
+            node.val += (rightVal + rootVal)
+            node.left, leftVal = calculateBST(node.left, node.val)
+            return (node, leftVal + originNodeVal + rightVal)
+        result, _ = calculateBST(root, 0)
+        return result
 sol = Solution()  
 # sys.setrecursionlimit(10000)
 # sol.fingerGame()
@@ -190,9 +212,13 @@ m = [["MUC", "LHR"], ["JFK", "MUC"], ["SFO", "SJC"], ["LHR", "SFO"]]
 # l  = ListNode.listCreater(t)
 s = 'abcabcabcs'
 # board = [["E","E","E","E","E"],["E","E","M","E","E"],["E","E","E","E","E"],["E","E","E","E","E"]]
-# [[2,2,2,2,2,2],[2,2,2,3,3],[2,2,2,6],[2,3,7],[3,3,3,3],[3,3,6],[6,6]]
-# [[2,2,2,2,2,2,2,3],[2,2,2,2,2,7],[2,2,2,2,3,3,3],[2,2,2,2,3,6],[2,2,3,3,7],[2,2,6,7],[2,3,3,3,3,3],[2,3,3,3,6],[2,3,6,6],[3,7,7]]
-print(sol.combinationSum2([10,1,2,7,6,1,5],8))
+
+# [[3,3,3,3,3,3],[2,2,2,2,2,2,2,2,2],[7,2,7,2],[3,2,3,2,2,2,2,2],[3,2,3,2,3,2,3]]
+# [[2,2,2,2,2,2,2,2,2],[2,2,2,2,2,2,3,3],,[2,2,2,3,3,3,3],[2,2,7,7],,[3,3,3,3,3,3]]
+# [2,2,2,2,3,7] [2,3,3,3,7]
+test = [5,2,13,1,3,12,14]
+node = TreeNode.treeCreater(test)
+print(sol.convertBST(node))
 
 
 
